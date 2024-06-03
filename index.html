@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosque con Oso</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* Fondo gris claro */
+        }
+        #lienzo {
+            border: 1px solid blue;
+            position: relative;
+        }
+        #oso {
+            position: absolute;
+            top: 200px; /* Ajusta la posición vertical según sea necesario */
+            left: 350px; /* Ajusta la posición horizontal según sea necesario */
+            width: 100px; /* Ajusta el ancho según sea necesario */
+            height: auto; /* Ajusta la altura según sea necesario */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="lienzo" width="800" height="500">
+        <p>Tu navegador no soporta CANVAS. Deberías actualizar tu navegador</p>
+    </canvas>
+    <img id="oso" src="/fotor.png" alt="Oso"> <!-- Reemplaza "oso.png" con la ruta de tu imagen de oso -->
+    <script type="text/javascript">
+        var lienzo = document.getElementById("lienzo");
+        var dibujo = lienzo.getContext("2d");
+        var oso = document.getElementById("oso");
+        var posX = 350;
+        var posY = 200;
+
+        // Función para dibujar el escenario
+        function dibujarEscenario() {
+            // Fondo
+            dibujo.fillStyle = "#B5CDFF"; // Cielo azul claro
+            dibujo.fillRect(0, 0, 800, 500);
+
+            // Suelo
+            dibujo.fillStyle = "#7CFC00"; // Verde claro
+            dibujo.fillRect(0, 375, 800, 125);
+
+            // Árboles
+            dibujarArbol(100, 300);
+            dibujarArbol(250, 320);
+            dibujarArbol(400, 300);
+            dibujarArbol(550, 320);
+            dibujarArbol(700, 300);
+        }
+
+        // Función para dibujar un árbol (mantenida para ilustración, puedes quitarla si no la necesitas)
+        function dibujarArbol(x, y) {
+            // Tronco (centrado en x)
+            dibujo.fillStyle = "#8B4513"; // Marrón
+            dibujo.fillRect(x - 20, y, 40, 120); // Ajuste del tamaño del tronco
+
+            // Hojas (centradas respecto al tronco)
+            dibujo.fillStyle = "#228B22"; // Verde
+            dibujo.beginPath();
+            dibujo.moveTo(x - 80, y); // Ajuste de la posición de las hojas
+            dibujo.lineTo(x, y - 140); // Ajuste de la posición de las hojas
+            dibujo.lineTo(x + 80, y); // Ajuste de la posición de las hojas
+            dibujo.closePath();
+            dibujo.fill();
+
+            dibujo.beginPath();
+            dibujo.moveTo(x - 70, y - 40); // Ajuste de la posición de las hojas
+            dibujo.lineTo(x, y - 180); // Ajuste de la posición de las hojas
+            dibujo.lineTo(x + 70, y - 40); // Ajuste de la posición de las hojas
+            dibujo.closePath();
+            dibujo.fill();
+        }
+
+        // Función para dibujar un objeto (por ejemplo, una roca)
+        function dibujarObjeto(x, y, imagenSrc) {
+            var imagen = new Image();
+            imagen.onload = function() {
+                dibujo.drawImage(imagen, x, y);
+            };
+            imagen.src = imagenSrc;
+        }
+
+        // Dibujar objetos adicionales en el escenario
+        function dibujarObjetos() {
+            // Dibujar roca en posición específica
+            dibujarObjeto(200, 300, "roca.png");
+            // Puedes agregar más objetos aquí
+        }
+
+        // Detectar colisiones entre el oso y los objetos
+        function detectarColisiones() {
+            // Verificar si las coordenadas del oso se superponen con las de algún objeto
+            // Por ejemplo, con la roca en (200, 300)
+            if (posX < 250 && posX + 100 > 200 && posY < 300 && posY + 100 > 300) {
+                // Colisión detectada, puedes tomar alguna acción aquí
+                console.log("¡Colisión con la roca!");
+            }
+        }
+
+        // Actualizar el lienzo en cada iteración (llamar esta función en el bucle principal del juego)
+        function actualizar() {
+            dibujarEscenario();
+            dibujarObjetos();
+            detectarColisiones();
+        }
+
+        // Manejar eventos de teclado para mover al oso
+        function moverOso(event) {
+            // Borrar el oso en su posición actual sin afectar el fondo
+            dibujarEscenario();
+
+            // Mover al oso según la tecla presionada
+            if (event.key === "ArrowUp") {
+                posY -= 10; // Mover hacia arriba
+            } else if (event.key === "ArrowDown") {
+                posY += 10; // Mover hacia abajo
+            } else if (event.key === "ArrowLeft") {
+                posX -= 10; // Mover hacia la izquierda
+            } else if (event.key === "ArrowRight") {
+                posX += 10; // Mover hacia la derecha
+            }
+
+            // Aplicar la nueva posición al oso
+            oso.style.top = posY + "px";
+            oso.style.left = posX + "px";
+        }
+
+        // Dibujar el escenario inicialmente
+        dibujarEscenario();
+
+        // Llamar a la función actualizar repetidamente para simular un bucle de juego
+        setInterval(actualizar, 100); // Llama a la función actualizar cada 100 milisegundos
+
+        // Manejar eventos de teclado para mover al oso
+        document.addEventListener("keydown", moverOso);
+    </script>
+</body>
+</html>
+
+
